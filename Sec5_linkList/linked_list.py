@@ -1,6 +1,5 @@
 from __future__ import annotations
-from typing import Any
-
+from typing import Any, Optional
 
 """
 「-> None」 の意味：この関数には戻り値がありませんよ！という意味
@@ -92,6 +91,83 @@ class LinkedList(object):
         previous_node.next = current_node.next
         current_node.next = None
 
+    def reverse_iterative(self) -> None:
+        """
+        head->node1->node2->***->last_node->None
+                    ↓ reverse ↓
+        head<-node1<-node2<-***<-last_node<-None
+
+        概念：
+        ・previous_node <- current_node をずらしていくイメージ
+        ・はじめは、None <- previous_node <- current_node <- ***
+
+        変数：
+        ・previous_node|current_node|next_node という位置関係を保持したまま、
+        　while で右にずらしていく
+        ・結局やりたいのは、previous_node<-current_node(current_node.next=previous_node)である
+        """
+        previous_node = None
+        current_node = self.head
+
+        while current_node:
+            next_node = current_node.next
+            current_node.next = previous_node
+
+            previous_node = current_node
+            current_node = next_node
+
+        self.head = previous_node
+
+    """
+    頻出問題
+    
+    再帰タイプ：前から進んで処理を行うタイプ
+    """
+    def reverse_recursive(self) -> None:
+        def _reverse_recursive(current_node: Node, previous_node: Node) -> Node:
+            if not current_node:
+                return previous_node
+
+            next_node = current_node.next       # 次のノードを一旦退避=>矢印の向きが変化するので右側に渡れる島を作っておく
+            current_node.next = previous_node   # ここがミソ！
+            previous_node = current_node        # previous 右ずらし
+            current_node = next_node            # current 右ずらし
+            return _reverse_recursive(current_node, previous_node)
+
+        self.head = _reverse_recursive(self.head, None)
+
+    """
+    練習問題：偶数が続いているときだけ逆方向にしろ
+    """
+    def reverse_even(self) -> None:
+        """
+        偶数が連続する場合のみ、順番をリバースさせる
+        例1：1, 4, 6, 8, 9 => 1, 8, 6, 4, 9
+        例2：1, 4, 6, 8, 9, 1, 4, 6, 8, 9 => 1, 8, 6, 4, 9, 1, 8, 6, 4, 9
+        例3：1, 3, 5 => 1, 3, 5
+        """
+        def _reverse_even(head: Node, previous_node: Node) -> Optional[Node]:
+            if head is None:
+                return None
+
+            current_node = head
+            while current_node and current_node.data % 2 == 0:
+                next_node = current_node.next
+                current_node.next = previous_node
+                previous_node = current_node
+                current_node = next_node
+
+            if current_node != head:
+                head.next = current_node
+                _reverse_even(current_node, None)
+                return previous_node
+            else:
+                head.next = _reverse_even(head.next, head)
+                return head
+
+        # この部分で渡しているself.headはappend関数で先頭の数字であると定義済み
+        self.head = _reverse_even(self.head, None)
+
 
 if __name__ == "__main__":
     # まず、インスタンスを生成してから内部の関数を使用
@@ -99,10 +175,14 @@ if __name__ == "__main__":
     ll.append(1)
     ll.append(2)
     ll.append(3)
-    ll.insert(0)
+    # ll.insert(0)
     ll.print()
-    ll.remove(2)
+    # ll.remove(2)
     print("################")
+    ll.reverse_iterative()
+    ll.print()
+    print("###############")
+    ll.reverse_recursive()
     ll.print()
     # print(ll.head.data) # 中身の数値を指す
     # print(ll.head.next) # 次のノードオブジェクトを指す
