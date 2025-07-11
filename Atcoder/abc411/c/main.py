@@ -10,6 +10,44 @@ N = 7 ... 1 0 0 0 0
 """
 
 """
+大事なこと
+-> square[i] と square[i+1] が異なるような i の数を求めること
+
+スコープ
+-> 考えるスコープをできるだけ小さくしていくことが計算量の短縮につながる
+-> 今回で言えば、ある時刻における、i番目のコインの前後を確認すること
+
+工夫
+-> 0番目とN+1番目を確定で白塗りにしておくこと
+    -> エッジケースを考えるため -> 1番目とN番目が指定された場合にq-1とq+1にaccess可能になる
+    -> なぜ白塗り？ -> q-1 or q+1 で端っこを考えるときにそいつらがもし白であれば余計に区間の数が大きくなる
+"""
+def main():
+    N, Q = map(int, input().split())
+    query = list(map(int, input().split()))
+
+    square = [0] * (N + 2)
+    ans = 0
+
+    for q in query:
+        if square[q-1] == square[q] and square[q] == square[q+1]:
+            ans += 1
+            square[q] = 1 - square[q]
+            print(ans)
+        elif square[q-1] != square[q] and square[q] != square[q+1]:
+            ans -= 1
+            square[q] = 1 - square[q]
+            print(ans)
+        else:
+            ans += 0
+            square[q] = 1 - square[q]
+            print(ans)
+
+
+if __name__ == '__main__':
+    main()
+
+"""
 １．今回の根本的な考え方
 - 作戦1；愚直にマス目を反転させ、区間の数を数える -> O(NQ) or O(N^2Q) よりダメ
 
@@ -29,17 +67,3 @@ N = 7 ... 1 0 0 0 0
         - i = X-1 について、マスiとマス(i+1)の色が等しかったならば異なるようになる。異なっていたならば、等しくなる。
         - i = X について、マスiマス(i+1) の色が等しかったならば異なるようになる。異なっていたならば、等しくなる。
 """
-def main():
-    N, Q = map(int, input().split())
-    query = list(map(int, input().split()))
-
-    square = [0] * N
-    cache = list()
-
-    for q in query:
-        pass
-
-
-if __name__ == '__main__':
-    main()
-
