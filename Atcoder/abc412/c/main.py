@@ -33,6 +33,7 @@ for _ in range(T):
 
     count = 2
     current = first
+    current_id = 0
     next_id = 1
 
     while current * 2 <= last:
@@ -40,12 +41,15 @@ for _ in range(T):
         next_id = bisect.bisect_right(sorted_domino_list, current * 2)
         if (next_id-1) == current_id:
             print(-1)
-            exit()
+            break
         else:
             current = sorted_domino_list[next_id-1]
             count += 1
 
-    print(count)
+    if (next_id - 1) == current_id:
+        pass
+    else:
+        print(count)
 
 
 
