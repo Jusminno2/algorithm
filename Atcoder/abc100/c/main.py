@@ -12,6 +12,11 @@ example:
 for i in range(N):
     count = 0
     if A[i] % 2 == 0:
+        """
+        a は最大で 10^9 個
+        => 高々26回程度
+        => 10オーダー
+        """
         while A[i] % 2 == 0:
             A[i] //= 2
             count += 1
