@@ -6,14 +6,28 @@ for _ in range(T):
     N = int(input())
     S = input()
 
-    bit = "0" * N
     list_N = [str(i) for i in range(1, N+1)]
 
-    for i in range(N):
+    for i in range(1, N+1):
         c_list = list(itertools.combinations(list_N, i))
-        print(i, c_list)
+        count = 0
         for c in c_list:
-            pass
+            status = 0
+            c_int = list(map(int, c))
+            for j in range(len(c_int)):
+                status += 2 ** (c_int[j]-1)
+            if S[status] == "1":
+                count += 1
+        if count == len(c_list):
+            print("No")
+            break
+
+        print("Yes")
+
+
+
+
+
 
 
 
