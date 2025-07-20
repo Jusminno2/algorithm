@@ -20,7 +20,7 @@ for _ in range(T):
         # point-5: 状態iに達したかどうかを判断する => 達した状態から次の状態への遷移を考える
         if ok[i] == 0:
             continue
-        # point-6: jは液体の種類のindex
+        # point-6: jは液体の種類のindex => いろんな状態を考える
         for j in range(N):
             # point-7: 状態iの中でj番目の薬品のビットが立っているか（その薬品もう使ったのか判定）
             if i & (1 << j):
@@ -31,6 +31,7 @@ for _ in range(T):
             if S[next] == '0':
                 ok[next] += 1
 
+    # 全部混ざった状態が(1<<N)-1番目 => みそは状態(1<<N)-1に到達できるかどうか
     if ok[(1<<N)-1]:
         print("Yes")
     else:
