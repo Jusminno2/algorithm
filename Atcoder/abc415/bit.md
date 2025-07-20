@@ -37,3 +37,10 @@ for i in range(2 ** n):
     if (total <= money):
         print(total, bag)
 ```
+
+#### 練習問題
+- ARC061 C - たくさんの数式 / Many Formulas
+- ABC079 C - Train Ticket
+- ABC104 C - All Green
+- ARC029 A - 高橋君とお肉
+- ABC002 D - 派閥
