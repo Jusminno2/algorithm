@@ -1,6 +1,8 @@
 N = int(input())
 
-if N%4==0 or N%7==0 or N%11==0:
-    print('Yes')
-else:
-    print('No')
+for i in range(101):
+    for j in range(101):
+        if 4*i + 7*j == N:
+            print('Yes')
+
+print('No')
