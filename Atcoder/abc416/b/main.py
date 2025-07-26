@@ -1,17 +1,8 @@
-S = input()
-S_arr = [s for s in S]
+'''
+2つのoの間には必ず#が含まれている必要がるので、
+=> 連続する.の中で、o担って良いのは一つまで
 
-for i in range(len(S)):
-    for j in range(len(S)):
-        if S_arr[i] == '#':
-            continue
-        else:
-            if S_arr[i] == S_arr[j]:
-                slice = S_arr[i+1:j]
-                if '#' in slice:
-                    S_arr[i] = 'o'
-                    S_arr[j] = 'o'
-                else:
-                    S_arr[i] = '.'
+このように、条件を読み替えていくことが大切
+'''
 
-print(''.join(S_arr))
+print(("#"+input()).replace("#.","#o")[1:])
