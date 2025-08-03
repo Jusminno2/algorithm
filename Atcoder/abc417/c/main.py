@@ -18,12 +18,12 @@ for i in range(N):
 # 和で表せる数とその登場回数をCounterオブジェクトで作成
 Ai_plus_i = Counter(Ai_plus_i)
 
-print(Ai_plus_i)
+# print(Ai_plus_i)
 
 # j - A[j] で表現できる数は何個あるのか？
 for j in range(N):
     # print(j-A[j])
     if Ai_plus_i[j - A[j]]:
-        count += 1
+        count += Ai_plus_i[j - A[j]]
 
 print(count)
