@@ -1,0 +1,60 @@
+sequenceDiagram
+autonumber
+actor U as User (Browser/App)
+participant C as CDN/Edge
+participant L as Load Balancer
+participant W as Web App (API)
+participant I as Ticket Inventory DB
+participant P as Payment Gateway
+
+Note over U: 事前にイベントページを表示済み
+U->>C: GET /event/{id} (static assets)
+C-->>U: 200 OK (cached HTML/JS/CSS)
+
+Note over U: 発売開始時刻にリクエスト送信
+U->>L: POST /api/tickets/purchase (bypass CDN)
+L->>W: Forward to available instance
+W->>W: Rate limiting check (per user/IP)
+
+alt Rate limited
+  W-->>U: 429 Too Many Requests
+  Note over U: 指数バックオフでリトライ
+else Request allowed
+  W->>I: BEGIN TRANSACTION
+  W->>I: SELECT * FROM tickets WHERE event_id=? AND status='available' FOR UPDATE LIMIT 1
+
+  alt Ticket available
+    I-->>W: Available ticket record
+    W->>I: UPDATE tickets SET status='reserved', user_id=?, reserved_at=NOW() WHERE id=?
+    W->>I: COMMIT
+    W-->>U: 200 OK {reserve_token, expires_at}
+
+    Note over U: 15分以内に決済完了が必要
+    U->>W: POST /api/payments/checkout
+    Note over W: reserve_token検証・有効期限チェック
+    W->>P: Create payment session
+    P-->>W: Payment URL/token
+    W-->>U: 200 OK {payment_url}
+
+    U->>P: Complete payment (3DS etc.)
+    P->>W: Payment webhook (success/failure)
+
+    alt Payment successful
+      W->>I: UPDATE tickets SET status='sold', paid_at=NOW()
+      W-->>U: 200 Purchase confirmed
+    else Payment failed/timeout
+      W->>I: UPDATE tickets SET status='available', user_id=NULL
+      W-->>U: 402 Payment failed
+      Note over U: チケットが再度販売可能に
+    end
+
+  else No tickets available
+    I-->>W: Empty result set
+    W->>I: ROLLBACK
+    W-->>U: 410 Sold out
+    Note over U: 完売通知
+  end
+end
+
+Note over W: バックグラウンドで予約期限切れをクリーンアップ
+W->>I: Periodic cleanup of expired reservations
