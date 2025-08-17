@@ -12,7 +12,7 @@ for _ in range(M):
 
 # いもす法 - Point 2 => 前からじゃんじゃん足していく
 for i in range(N):
-    cum[i + 1] =+ cum[i]
+    cum[i + 1] += cum[i]
 
 # もし偶数回スワップ => 元の位置｜奇数回スワップ => t の文字列
 ans = [s[i] if cum[i] % 2 == 0 else t[i] for i in range(N)]
