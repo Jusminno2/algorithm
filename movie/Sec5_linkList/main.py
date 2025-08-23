@@ -1,6 +1,9 @@
 from __future__ import annotations
 from typing import Any
 
+from Atcoder.abc412.c.main import current
+
+
 class Node(object):
     def __init__(self, data: Any, next_node: Node = None):
         self.data = data
@@ -54,6 +57,30 @@ class LinkList(object):
         previous.next = current.next
         current = None
 
+    def reverse_iterative(self) -> None:
+        previous_node = None
+        current_node = self.head
+        while current_node:
+            next_node = current_node.next
+            current_node.next = previous_node
+
+            previous_node = current_node
+            current_node = next_node
+
+        self.head = previous_node
+
+    def reverse_recursive(self) -> None:
+        def _reverse_recursive(current_node: Node, previous_node: Node):
+            if not current_node:
+                return previous_node
+
+            next_node = current_node.next
+            current_node.next = previous_node
+            previous_node = current_node
+            current_node = next_node
+            return _reverse_recursive(current_node, previous_node)
+
+        self.head = _reverse_recursive(self.head, None)
 
 
 if __name__ == '__main__':
