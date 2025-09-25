@@ -13,8 +13,10 @@ class Solution:
 
             # もし中央の値が左側グループに属する場合...
             if nums[l] <= nums[m]:
+                # mより右のブロックにいる場合
                 if target > nums[m] or target < nums[l]:
                     l = m + 1
+                # mより左のブロックにいる場合
                 else:
                     r = m - 1
 
