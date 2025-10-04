@@ -13,13 +13,13 @@ class Solution:
         current = dummy
 
         # 繰り上げというエッジケースを考慮
-        curryUp = 0
+        carryUp = 0
 
-        while l1 or l2 or curryUp:
+        while l1 or l2 or carryUp:
             # Noneであっても0という意味はもつからね
             val1 = l1.val if l1 else 0
             val2 = l2.val if l2 else 0
-            val = val1 + val2
+            val = val1 + val2 + carryUp
 
             # 繰り上げを考慮していく
             carryUp = val // 10
